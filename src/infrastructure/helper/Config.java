@@ -68,6 +68,10 @@ public class Config {
 
 	public static void main(String[] argvs) {
 		// test: 
-		Config conf = new Config();
+		Config conf = new Config("file/test.yaml");
+		
+		System.out.println(conf.getConfig());
+		System.out.println(conf.getSendRules());
+		System.out.println(conf.getReceiveRules());
 	}
 }
