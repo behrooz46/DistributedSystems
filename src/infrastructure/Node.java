@@ -1,7 +1,12 @@
 package infrastructure;
 
 public class Node {
-	String name;
-	String ip;
-	String port;
+	public String name;
+	public String ip;
+	public String port;
+	public Node(String name, String ip, String port) {
+		this.name = name ; 
+		this.ip = ip ;
+		this.port = port ;
+	}
 }
