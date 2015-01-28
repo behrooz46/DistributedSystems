@@ -6,12 +6,13 @@ import infrastructure.message.Message;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class Connector {
+public class Connector extends Thread {
 	Buffer delayedQueue, outgoing;
 	private ArrayList<Rule> rules; 
 	
-	public Connector(Node des, Socket socket, Buffer incoming, ArrayList<Rule> rules) {
+	public Connector(Node des, Socket socket, MessagePasser mp, ArrayList<Rule> rules) {
 		//TODO create two thread for sending / receiving 
+		//TODO mp.getIncoming 
 	}
 	
 	public void updateRules(ArrayList<Rule> rules){
