@@ -9,6 +9,18 @@ public class Message implements Serializable {
 	Object payload ;
 	
 	
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public Header getHeader() {
+		return header;
+	}
+
+	public Object getPayload() {
+		return payload;
+	}
+	
 	public Message(String dest, String kind, Object data) {
 	}
 	

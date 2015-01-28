@@ -1,5 +1,7 @@
 package infrastructure;
 
+import java.util.Map;
+
 import infrastructure.helper.Config;
 import infrastructure.message.Message;
 
@@ -9,7 +11,8 @@ public class MessagePasser {
 	private String confFileName;
 	private int seqID ;
 	
-	Buffer incoming, delayedOutgoing, outgoing ;
+	Buffer incoming ;
+	Map<String, Connector> connectors ; 
 
 	public MessagePasser(String configurationFilename, String localName) {
 		this.nodeName = localName ;
@@ -21,28 +24,27 @@ public class MessagePasser {
 
 	private void initialize() {
 		Config config = new Config(confFileName);
-		//TODO
+		//TODO 
 	}
 
 	void send(Message message) {
-		//set the sequence number ... non-reused, strictly incrementing integer from 0 
+		String des = message.getHeader().destination ; 
+		if (connectors.containsKey(des) == false){
+			//TODO connect with socket :D;
+		}
 		
-		//update rules
-		//check against rules
-		//put into queue
+		Connector conn = connectors.get(des);
+		message.set_seqNum(this.seqID++);
+		message.set_source(this.nodeName);
+		conn.send(message);
 	}
 	
-	//real send function
-	//when we have sth to send 
-	//send everything from both outgoing & delayedOutgoing
-	 
-	//real receive function
-	//check against rules
-	//store into buffer
-	 
+	
+	//TODO if config file changed, notify all connectors 
+
 	Message receive( ) {
 		// may block. Doesn't have to.
-		// read buffer.poll()
-		return null;
+		// TODO lock 
+		return incoming.poll() ;
 	} 
 }
