@@ -46,7 +46,9 @@ public class Config {
 			e.printStackTrace();
 		} finally {
 			try {
-				input.close();
+				if (input != null) {
+					input.close();
+				}
 			} catch (IOException e) {
 				System.out.println("file input closing error");
 				e.printStackTrace();
