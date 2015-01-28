@@ -66,4 +66,8 @@ public class Config {
 		return receiveRules;
 	}
 
+	public static void main(String[] argvs) {
+		// test: 
+		Config conf = new Config();
+	}
 }
