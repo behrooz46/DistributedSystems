@@ -2,5 +2,8 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/Users/behrooz/Education/Graduate/Courses/Distributed Systems/Labs/Lab0/lib/snakeyaml-1.11-javadoc.jar"/>
+	<classpathentry kind="lib" path="/Users/behrooz/Education/Graduate/Courses/Distributed Systems/Labs/Lab0/lib/snakeyaml-1.11-sources.jar"/>
+	<classpathentry kind="lib" path="/Users/behrooz/Education/Graduate/Courses/Distributed Systems/Labs/Lab0/lib/snakeyaml-1.11.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
