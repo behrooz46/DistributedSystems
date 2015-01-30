@@ -13,12 +13,22 @@ public class Application{
    public static void main(String [] args){
 	   try {
 		Scanner cin = new Scanner(System.in);
+		
+		//A B C D
+		//"file/test.yaml"
+		String name, fileName ;
+		if (args.length == 2){
+			name = args[0] ;
+			fileName = args[1] ;
+		}else{
+			System.out.print("Enter node name: ");
+			name = cin.next() ;
+			System.out.print("Enter file address: ");
+			fileName = cin.next() ;
+		}
+		
 		System.out.println("When in doubt shout for \"help\" !");
-		System.out.print("Enter node name: ");
-		
-		String name = cin.next();
-		MessagePasser mp = new MessagePasser("file/test.yaml", name);
-		
+		MessagePasser mp = new MessagePasser(fileName, name);
 		
 		while(true){
 			System.out.print("I am at your command: ");
