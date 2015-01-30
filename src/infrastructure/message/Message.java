@@ -26,7 +26,11 @@ public class Message implements Serializable {
 		this.payload = data ;
 	}
 	
-	// These settors are used by MessagePasser.send, not your app
+	public Message(Message msg) {
+		this.header = new Header(msg.getHeader());
+		this.payload = msg.getPayload() ;
+	}
+
 	public void set_source(String source) {
 		header.source = source ;
 	}
@@ -34,10 +38,10 @@ public class Message implements Serializable {
 		header.sequenceNumber = sequenceNumber ;
 	}
 	public void set_duplicate(Boolean dupe) {
+		header.duplicate = true ;
 	}
-	// other accessors, toString, etc as needed
 	@Override
 	public String toString() {
-		return "MSG: [" + header.toString() + "]" ; 
+		return "[" + header.toString() + "]" ; 
 	}
 }

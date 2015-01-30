@@ -19,6 +19,13 @@ public class Header implements Serializable {
 		this.kind = kind;
 	}
 	
+	public Header(Header header) {
+		this.destination = header.destination;
+		this.sequenceNumber = header.sequenceNumber;
+		this.duplicate = header.duplicate;
+		this.kind = header.kind;
+	}
+
 	@Override
 	public String toString() {
 		return source + " " + destination + ", #" + sequenceNumber + ( duplicate ? ", DUP, " : ", " ) + kind ;  

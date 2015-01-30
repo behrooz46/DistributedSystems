@@ -1,12 +1,16 @@
 package infrastructure;
 
-import infrastructure.connection.Listener;
-import infrastructure.connection.Speaker;
+import infrastructure.config.Config;
+import infrastructure.config.Rule;
+import infrastructure.handshake.Listener;
+import infrastructure.handshake.Speaker;
 import infrastructure.message.Message;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -22,6 +26,8 @@ public class MessagePasser{
 	public Map<String, Node> nodes ;
 	
 	public Object lock = new Object();
+	private List<Rule> sendRules;
+	private List<Rule> receiveRules;
 	
 	public MessagePasser(String configurationFilename, String localName) throws IOException {
 		this.nodeName = localName ;
@@ -36,11 +42,12 @@ public class MessagePasser{
 	}
 
 	private void initialize() throws IOException {
-		//TODO Config config = new Config(confFileName);
-		this.nodes.put("A", new Node("A", "localhost", 4411));
-		this.nodes.put("B", new Node("B", "localhost", 5511));
-		this.nodes.put("C", new Node("C", "localhost", 6661));
-		this.nodes.put("D", new Node("D", "localhost", 7771));
+		Config config = new Config(confFileName);
+		for(Node node : config.getNodes()){
+			this.nodes.put(node.name, node);
+		}
+		this.sendRules = config.getSendRules();
+		this.receiveRules = config.getReceiveRules();
 		//-------------------------
 		Node me = this.nodes.get(this.nodeName) ;
 		//-------------------------
@@ -55,18 +62,23 @@ public class MessagePasser{
 			throw new Exception("Host is not connected!");
 		}
 		
+		//TODO if config file changed, notify all connectors
+		
 		Connector conn = connectors.get(des);
 		message.set_seqNum(this.seqID++);
 		message.set_source(this.nodeName);
 		conn.send(message);
 	}
-	
-	
-	//TODO if config file changed, notify all connectors 
 
 	public Message receive( ) {
-		// may block. Doesn't have to.
-		// TODO lock 
 		return incoming.poll() ;
-	} 
+	}
+	
+	public List<Rule> getSendRuls(){
+		return sendRules;
+	}
+	
+	public List<Rule> getReceiveRules(){
+		return receiveRules;
+	}
 }
