@@ -42,11 +42,11 @@ public class MessagePasser{
 
 	private void initialize() throws IOException {
 		Config config = new Config(confFileName);
+		this.sendRules = config.getSendRules();
+		this.receiveRules = config.getReceiveRules();
 		for(Node node : config.getNodes()){
 			this.nodes.put(node.name, node);
 		}
-		this.sendRules = config.getSendRules();
-		this.receiveRules = config.getReceiveRules();
 		//-------------------------
 		Node me = this.nodes.get(this.nodeName) ;
 		//-------------------------
@@ -56,14 +56,24 @@ public class MessagePasser{
 	
 
 	public void send(Message message) throws Exception {
-		String des = message.getHeader().destination ; 
-		if (connectors.containsKey(des) == false || connectors.get(des) == null){
-			throw new Exception("Host is not connected!");
-		}
+		String des = message.getHeader().destination ;
 		
-		//TODO if config file changed, notify all connectors
+		boolean isValid = true ;
+		synchronized (this.lock) {
+			if (connectors.containsKey(des) == false || connectors.get(des) == null)
+				isValid = false ; 
+		}
+		if (isValid == false)
+			throw new Exception("Host is not connected!");
+		
+		
+		//TODO if changed
+		Config config = new Config(confFileName);
+		this.sendRules = config.getSendRules();
+		this.receiveRules = config.getReceiveRules();
 		
 		Connector conn = connectors.get(des);
+		conn.updateRules();
 		message.set_seqNum(this.seqID++);
 		message.set_source(this.nodeName);
 		conn.send(message);

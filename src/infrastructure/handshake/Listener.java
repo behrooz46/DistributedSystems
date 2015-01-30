@@ -26,24 +26,33 @@ public class Listener extends Thread {
 				DataInputStream in = new DataInputStream(socket.getInputStream());
 				String nodeName = in.readUTF() ;
 				
+				boolean shouldClose = true ;
+				
 		        synchronized (self.lock) {
-		        	DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-		        	
 					if (self.connectors.containsKey(nodeName) == false){
-						Connector conn = new Connector(self.nodes.get(nodeName), socket, self);
-						self.connectors.put(nodeName, conn) ;
-						System.err.println("** CONNECTION ** (" + nodeName +  ", " + self.nodeName + ")");
-
-						out.writeUTF(self.nodeName);
+						self.connectors.put(nodeName, null) ;
+						shouldClose = false ;
 					}else if (self.connectors.get(nodeName) == null){
 						System.err.println(self.nodeName + " trying to connect to " + nodeName);
-						out.writeUTF("");
-						socket.close();
 					}else{
 						System.err.println(self.nodeName + " there's connection to " + nodeName);
-						out.writeUTF("");
-						socket.close();
 					}
+		        }
+		        
+		        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+		        if (shouldClose){
+		        	out.writeUTF("null");
+		        	out.flush();
+					socket.close();
+		        }else{
+		        	out.writeUTF(self.nodeName);
+		        	out.flush();
+		        	
+		        	Connector conn = new Connector(self.nodes.get(nodeName), socket, self);
+		        	synchronized (self.lock) {
+						self.connectors.put(nodeName, conn) ;
+					}
+		        	System.err.println("** CONNECTION ** (" + nodeName +  ", " + self.nodeName + ") " + socket);
 		        }
 			}catch(SocketTimeoutException s){
 				System.out.println("Socket timed out!");

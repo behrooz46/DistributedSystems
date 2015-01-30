@@ -20,12 +20,15 @@ public class Speaker extends Thread {
 	public void run() {
 		Random random = new Random();
 		while(true){
-			
 			for (String nodeName : self.nodes.keySet()) {
 				if (nodeName.equals(self.nodeName))
 					continue ;
 				
-				if (self.connectors.containsKey(nodeName))
+				boolean alreadyInUse = true ;
+				synchronized (self.lock) {
+					alreadyInUse = self.connectors.containsKey(nodeName) ;
+				}
+				if (alreadyInUse)
 					continue ;
 				
 				Node node = self.nodes.get(nodeName);
@@ -35,7 +38,7 @@ public class Speaker extends Thread {
 				
 				try{
 					Socket socket = new Socket(node.ip, node.port);
-			        
+					
 			        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 			        out.writeUTF(self.nodeName);
 			        
@@ -45,9 +48,10 @@ public class Speaker extends Thread {
 			        synchronized (self.lock) {
 			        	if (desName.equals(nodeName)){
 					        Connector conn = new Connector(self.nodes.get(nodeName), socket, self);
-					        System.err.println("** CONNECTION ** (" + self.nodeName +  ", " + nodeName + ")");
+					        System.err.println("** CONNECTION ** (" + self.nodeName +  ", " + nodeName + ") " + socket);
 							self.connectors.put(nodeName, conn) ;
 			        	}else{
+			        		System.err.println("NOT CONN (" + self.nodeName +  ", " + nodeName + ")");
 							self.connectors.remove(nodeName);
 						}
 			        }
@@ -64,7 +68,7 @@ public class Speaker extends Thread {
 			}
 			
 			try {
-				int timeToSleep = random.nextInt(5) * 100 ;
+				int timeToSleep = random.nextInt(5) * 200 ;
 				Thread.sleep(timeToSleep) ;
 			} catch (InterruptedException e) {
 				e.printStackTrace();

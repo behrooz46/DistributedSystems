@@ -14,7 +14,7 @@ public class Application{
 	   try {
 		Scanner cin = new Scanner(System.in);
 		System.out.println("When in doubt shout for \"help\" !");
-		System.out.print("Enter node name [A/B/C/D]: ");
+		System.out.print("Enter node name: ");
 		
 		String name = cin.next();
 		MessagePasser mp = new MessagePasser("file/test.yaml", name);
