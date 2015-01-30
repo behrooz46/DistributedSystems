@@ -119,15 +119,20 @@ public class Connector {
 								if (r.match(msg)){
 									if (r.getAction().equals("drop")){
 										shouldGo = false ;
+										
+										break ;
 									}else if (r.getAction().equals("duplicate")){
 										Message newMsg = new Message(msg);
 										newMsg.set_duplicate(true); 
 										mp.incoming.add(newMsg);
-										
 										shouldGo = true ;
+										
+										break ;
 									}else if (r.getAction().equals("delay")){
 										delayedIncoming.add(msg);
 										shouldGo = false ;
+										
+										break ;
 									}else{
 										System.err.println("Matched a non recognized rule.");
 										break ;

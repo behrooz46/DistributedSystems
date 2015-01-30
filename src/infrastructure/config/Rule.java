@@ -29,10 +29,8 @@ public class Rule {
 				return false ;
 		}
 		if (map.containsKey("duplicate")){
-			//FIXME check duplicate works 
-			if ( map.get("duplicate").equals("True") && msg.getHeader().duplicate == true )
-				return false ;
-			if ( map.get("duplicate").equals("False") && msg.getHeader().duplicate == false )
+			boolean duplicate = (Boolean)map.get("duplicate");
+			if ( duplicate != msg.getHeader().duplicate)
 				return false ;
 		}
 		if (map.containsKey("seqNum")){

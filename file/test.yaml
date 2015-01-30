@@ -36,6 +36,12 @@ sendRules :
     kind   : Syn
     
 receiveRules :
+  - action : drop
+    duplicate : True        
+    src    : A
+    dest   : B
+    kind   : Syn      		
+    
   - action : duplicate      
     src    : A      		
     seqNum : 1
