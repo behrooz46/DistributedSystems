@@ -20,6 +20,7 @@ public class Header implements Serializable {
 	}
 	
 	public Header(Header header) {
+		this.source = header.source;
 		this.destination = header.destination;
 		this.sequenceNumber = header.sequenceNumber;
 		this.duplicate = header.duplicate;

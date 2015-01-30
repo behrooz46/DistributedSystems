@@ -5,7 +5,6 @@ import infrastructure.Node;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +43,7 @@ public class Config {
 		
 		@SuppressWarnings("unchecked")
 		List< Map<String, Object> > recieve = (List< Map<String, Object> >) map.get("receiveRules");
-		for(Map<String, Object> entry : send){
+		for(Map<String, Object> entry : recieve){
 			Rule rule = new Rule(entry);
 			this.receiveRules.add(rule);
 		}
