@@ -7,16 +7,16 @@
 # The local node’s name is included in this list
 configuration :
 - name : A
-  ip   : 127.0.0.1
+  ip   : 169.254.24.196
   port : 4444
 - name : B
-  ip   : 127.0.0.1
+  ip   : 169.254.24.196
   port : 5555
 - name : C
-  ip   : 127.0.0.1
+  ip   : 169.254.156.156
   port : 7777
 - name : D
-  ip   : 127.0.0.1
+  ip   : 169.254.156.156
   port : 8888
 # This is the incoming port on which MP will listen
 # May be changed for further communication as usual

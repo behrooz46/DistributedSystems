@@ -23,8 +23,9 @@ public class Application{
 		}else{
 			System.out.print("Enter node name: ");
 			name = cin.next() ;
-			System.out.print("Enter file address: ");
-			fileName = cin.next() ;
+//			System.out.print("Enter file address: ");
+//			fileName = cin.next() ;
+			fileName = "/Users/behrooz/Dropbox/test.yaml" ;
 		}
 		
 		System.out.println("When in doubt shout for \"help\" !");
