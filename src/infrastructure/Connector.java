@@ -1,7 +1,10 @@
 package infrastructure;
 
+import infrastructure.clock.Clock;
+import infrastructure.clock.ClockService;
 import infrastructure.config.Rule;
 import infrastructure.message.Message;
+import infrastructure.message.TimestampedMessage;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -11,6 +14,7 @@ import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Connector {
+	//TODO move delayed queue to MessagePasser
 	ConcurrentLinkedQueue<Message> delayedOutgoing, outgoing;
 	ConcurrentLinkedQueue<Message> delayedIncoming;
 	
@@ -41,14 +45,17 @@ public class Connector {
 		this.receiveRules = mp.getReceiveRules() ;
 	}
 	
-	public void send(Message msg){
+	public void send(Message m){
+		TimestampedMessage msg = new TimestampedMessage(m, ClockService.getInstance().timestampSend());
+		//TODO ask when exactly
+		
 		boolean shouldGo = true ;
 		for(Rule r : this.sendRules){
 			if (r.match(msg)){
 				if (r.getAction().equals("drop")){
 					shouldGo = false ;
 				}else if (r.getAction().equals("duplicate")){
-					Message newMsg = new Message(msg);
+					TimestampedMessage newMsg = new TimestampedMessage(msg);
 					newMsg.set_duplicate(true); 
 					outgoing.add(newMsg);
 					
@@ -78,21 +85,20 @@ public class Connector {
 			try {
 				ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
 				while(true){
-//					System.err.println("Waiting for send Lock");
 					synchronized (bufferLock) {
 						try {
 							bufferLock.wait();
-//							System.err.println("Got send Lock");
+							
+							while(!delayedOutgoing.isEmpty()){
+								Message msg = delayedOutgoing.poll();
+								outgoing.add(msg);
+							}
 							
 							while(!outgoing.isEmpty()){
 								Message msg = outgoing.poll();
 								out.writeObject(msg);
 							}
 							
-							while(!delayedOutgoing.isEmpty()){
-								Message msg = delayedOutgoing.poll();
-								out.writeObject(msg);
-							}
 							out.flush();
 						} catch (InterruptedException e) {
 						}
@@ -111,7 +117,9 @@ public class Connector {
 					ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
 					while(true){
 						try {
-							Message msg = (Message)in.readObject();
+							TimestampedMessage msg = (TimestampedMessage)in.readObject();
+							ClockService.getInstance().timestampRecieve(msg.timestamp);
+							//TODO ask when exactly
 							
 							boolean shouldGo = true ; 
 							
@@ -122,7 +130,7 @@ public class Connector {
 										
 										break ;
 									}else if (r.getAction().equals("duplicate")){
-										Message newMsg = new Message(msg);
+										Message newMsg = new TimestampedMessage(msg);
 										newMsg.set_duplicate(true); 
 										mp.incoming.add(newMsg);
 										shouldGo = true ;
